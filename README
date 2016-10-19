@@ -1,0 +1,68 @@
+@@@@@@@@   This is a readme file for the retron design software used by the 2016 NTNU iGEM team. @@@@@@@@@
+
+We are modeling the interaction of a deoxyribozyme RNA nuclease with a target RNA. We have two study cases:
+In the first we are studying a self-inhibiting RBS, that gets activated by cleavage of the inhibiting arm at a 
+specific locus:
+
+mRNA:
+5'-[RBS rev.compl.]--[random tract 1 (3)]--[recognition site no.1 (8)]--[cutting seq. (CGU)]--[recognition site no.2 (8)]--[random tract 2 (3)]--[RBS]--[original RFP mRNA]-3'
+
+nucleases:
+1:  5'-[high GC tail 1 (6)]--[recognition site no.2 (8) inv.compl.]--[nuclease catalytic site]--[recognition site no.1 (8) inv.compl.]--[high GC tail 2 (6)]-3'
+2:  5'-[high GC tail 2 (6) inv.compl.]--[recognition site no.2 (8) inv.compl.]--[nuclease catalytic site]--[recognition site no.1 (8) inv.compl.]--[high GC tail 1 (6) inv.compl.]-3'
+
+** (n) means n nucleotides long
+
+In the second we are cleaving the mRNA of CI inhibitor.
+
+mRNA:
+usual CI mRNA
+
+nucleases:
+1:  5'-[high GC tail 1 (6)]--[recognition site no.2 (8) inv.compl.]--[nuclease catalytic site]--[recognition site no.1 (8) inv.compl.]--[high GC tail 2 (6)]-3'
+2:  5'-[high GC tail 2 (6) inv.compl.]--[recognition site no.2 (8) inv.compl.]--[nuclease catalytic site]--[recognition site no.1 (8) inv.compl.]--[high GC tail 1 (6) inv.compl.]-3'
+
+
+For the DNA and RNA folding we are using the ViennaRNA software package, more specifically RNAcofold. The current
+version can either fold DNA with DNA or RNA with RNA. We therefore use an older version for the mRNA-nuclease interaction:
+http://www.tbi.univie.ac.at/RNA/#other
+For the interactions between two nucleases (DNA-DNA) we use the newest version of the software - 2.2.9:
+http://www.tbi.univie.ac.at/RNA/#
+
+We make 3 scripts: 
+1) genRNA.sh - for the self-quenching RNA (input: 3)
+2) genRNA_CI.sh - for the CI cleavage (input: 6 1.0)
+3) mutagenize.sh - for fine-tuning the results of the two above (input: 10.0)
+
+3 additional programs are there to assist the above scripts:
+1) randseq.cpp   - generates random DNA or RNA sequences of defined length and GC-AT bias. (bias == 1 means equal amount of AT and GC, > 1 - more GC).
+   example: ./randseq (RNA or R or DNA or D) (nucleotide number) (bias)
+            ./randseq RNA 10 0.5
+2) complement.cpp - generates the complementary sequence to a given input sequence 
+   example: ./randseq (RNA or R or DNA or D) (sequence)
+            ./randseq RNA augcaaccu
+3) mut.cpp - makes n random mutations in the N first nucleotides from either end of a given DNA or RNA sequence and makes reverse complimentary mutations in a second DNA or RNA
+   example: ./mut (RNA or R or DNA or D) (number of mutations n) (target bases from ends N) (sequence 1) (sequence 2)
+            ./mut RNA 1 2 augcgga uccgcau
+
+Additionally we provide the sequences we were using:
+1) The RFP and CI mRNAs: RBS_1.in and RBS_11.in respectively.
+2) The reverse complement of the RFP RBS: RBS_0.in
+
+At first we run script 1 or 2 until we find a result where both nucleases are attached in the right place of the mRNA and have reasonable binding constants. 
+We then use the mutagenize script in order to tune the binding constants of the two nucleases to become similar and large enough. 
+Finally we use the newest version of the viennaRNA library to check that the nucleases attach to each other with much greater binding constant than to the mRNA.
+
+### RUNNING THE SCRIPTS ###
+
+To run these scripts, first compile the cpp files into executables with the same names. Then install
+the needed viennaRNA libraries.
+
+The scripts were run like this:
+genRNA.sh 3
+genRNA_CI.sh 6 1.0
+mutagenize.sh 10.0
+
+For further information please contact our chief designer. 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
